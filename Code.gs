@@ -8,32 +8,43 @@ function doGet() {
 
 function processForm(formObject) {
   try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Sheet1");
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    // Mencari sheet bernama "Sheet1", jika tidak ada gunakan sheet pertama (indeks 0)
+    var sheet = ss.getSheetByName("tutur") || ss.getSheets()[0]; 
     
-    // Logika sederhana untuk menggabung data anak
-    var daftarAnak = "";
-    if (formObject.anak) {
-      daftarAnak = Array.isArray(formObject.anak) ? formObject.anak.filter(String).join(", ") : formObject.anak;
+    if (!sheet) {
+      throw new Error("Sheet tidak ditemukan. Pastikan Google Sheet Anda tidak kosong.");
     }
 
+    // Mengolah data anak
+    var daftarAnak = "";
+    if (formObject.anak) {
+      if (Array.isArray(formObject.anak)) {
+        daftarAnak = formObject.anak.filter(function(el) { return el.trim() !== ""; }).join(", ");
+      } else {
+        daftarAnak = formObject.anak;
+      }
+    }
+
+    // Eksekusi Simpan Data
     sheet.appendRow([
-      new Date(),
-      "No Photo", // Untuk versi awal foto dinonaktifkan agar ringan, cukup link jika perlu
-      formObject.nama,
-      formObject.marga,
-      formObject.bapa,
-      formObject.nande,
-      formObject.senina_turang,
-      formObject.ndehara,
-      formObject.bapa_ndehara,
-      formObject.nande_ndehara,
-      formObject.senina_turang_ndehara,
-      daftarAnak,
-      formObject.alamat,
-      "'" + formObject.wa // Tanda petik agar nomor HP tidak berubah jadi format saintifik
+      new Date(),              // A: Timestamp
+      "No Photo",              // B: Foto
+      formObject.nama,         // C: Nama
+      formObject.marga,        // D: Marga
+      formObject.bapa,         // E: Bapa
+      formObject.nande,        // F: Nande
+      formObject.senina_turang, // G: Senina_Turang
+      formObject.ndehara,      // H: Ndehara
+      formObject.bapa_ndehara, // I: Bapa_Ndehara
+      formObject.nande_ndehara, // J: Nande_Ndehara
+      formObject.senina_turang_ndehara, // K: Senina_Turang_Ndehara
+      daftarAnak,              // L: Anak
+      formObject.alamat,       // M: Alamat
+      "'" + formObject.wa      // N: No_WA
     ]);
     
-    return "Mejuah-juah! Data Berhasil Disimpan.";
+    return "Mejuah-juah! Data enggo tersimpan.";
   } catch (f) {
     return "Terjadi kesalahan: " + f.toString();
   }
