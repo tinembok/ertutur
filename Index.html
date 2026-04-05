@@ -1,35 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <base target="_top">
   <style>
     :root {
-      --uis-gara: #b30000; /* Merah Tua Karo */
-      --gold: #d4af37;
-      --black: #1a1a1a;
+      --merah-karo: #8B0000;
+      --emas-karo: #D4AF37;
+      --hitam-karo: #1A1A1A;
+      --putih: #FFFFFF;
     }
-    body { font-family: sans-serif; background-color: #f4f4f4; margin: 0; padding: 10px; }
-    .header { background: var(--uis-gara); color: white; padding: 20px; text-align: center; border-bottom: 5px solid var(--gold); border-radius: 8px 8px 0 0; }
-    .form-container { background: white; padding: 20px; border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .section-title { background: var(--black); color: var(--gold); padding: 5px 10px; margin-top: 20px; font-size: 0.9em; }
-    label { display: block; margin-top: 10px; font-weight: bold; color: #333; }
-    input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-    .btn-simpan { background: var(--uis-gara); color: white; border: none; padding: 15px; width: 100%; margin-top: 30px; border-radius: 4px; font-weight: bold; cursor: pointer; border: 2px solid var(--gold); }
-    .anak-row { display: flex; gap: 5px; margin-bottom: 5px; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f0f0; margin: 0; padding: 0; }
+    .header { background: var(--hitam-karo); color: var(--emas-karo); padding: 20px; text-align: center; border-bottom: 4px solid var(--merah-karo); }
+    .header h2 { margin: 0; letter-spacing: 2px; }
+    .container { max-width: 500px; margin: 20px auto; background: var(--putih); padding: 15px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+    
+    .section-divider { background: var(--merah-karo); color: white; padding: 8px; margin: 20px -15px 10px -15px; font-size: 0.9em; font-weight: bold; text-align: center; }
+    
+    label { display: block; margin-top: 15px; font-weight: bold; color: var(--hitam-karo); font-size: 0.9em; }
+    input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
+    
+    .btn-tambah { background: #eee; border: 1px dashed #999; width: 100%; padding: 8px; margin-top: 5px; cursor: pointer; }
+    .btn-submit { background: var(--merah-karo); color: var(--emas-karo); border: 2px solid var(--emas-karo); padding: 15px; width: 100%; margin-top: 30px; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer; }
+    .btn-submit:active { transform: scale(0.98); }
+    
+    .footer { text-align: center; padding: 20px; font-size: 0.8em; color: #666; }
   </style>
 </head>
 <body>
+
   <div class="header">
     <h2>TUTUR KARO</h2>
-    <small>Rakut Sitelu, Tutur Siwaluh</small>
+    <div style="font-size: 0.8em; color: white;">Rakut Sitelu & Tutur Siwaluh</div>
   </div>
 
-  <div class="form-container">
-    <form id="tuturForm" onsubmit="handleFormSubmit(this)">
+  <div class="container">
+    <form id="formTutur">
       <label>Gelar / Nama Lengkap</label>
-      <input type="text" name="nama" required>
+      <input type="text" name="nama" placeholder="Contoh: Tarsim" required>
 
       <label>Marga / Beru</label>
       <select name="marga">
+        <option value="">- Pilih Marga -</option>
         <option>Karo-Karo</option>
         <option>Ginting</option>
         <option>Tarigan</option>
@@ -37,47 +48,64 @@
         <option>Perangin-angin</option>
       </select>
 
-      <div class="section-title">INFO ORANG TUA (Bapa & Nande)</div>
-      <input type="text" name="bapa" placeholder="Bapa (Lengkap dengan Marga)">
-      <input type="text" name="nande" placeholder="Nande (Lengkap dengan Beru)">
-      <input type="text" name="senina_turang" placeholder="Senina / Turang">
+      <div class="section-divider">KADU-KADU (ORANG TUA)</div>
+      <label>Bapa</label>
+      <input type="text" name="bapa" placeholder="Nama Bapa & Marga">
+      <label>Nande</label>
+      <input type="text" name="nande" placeholder="Nama Nande & Beru">
+      <label>Senina / Turang</label>
+      <input type="text" name="senina_turang" placeholder="Saudara Kandung">
 
-      <div class="section-title">INFO JABU (Istri/Suami & Mertua)</div>
-      <input type="text" name="ndehara" placeholder="Ndehara / Perbulangen (Beru/Marga)">
-      <input type="text" name="bapa_ndehara" placeholder="Simatua Amani (Marga)">
-      <input type="text" name="nande_ndehara" placeholder="Simatua Inani (Beru)">
-      <input type="text" name="senina_turang_ndehara" placeholder="Impal/Senina Ndehara">
+      <div class="section-divider">JABU (PASANGAN & MERTUA)</div>
+      <label>Ndehara / Perbulangen</label>
+      <input type="text" name="ndehara" placeholder="Istri (Beru) / Suami (Marga)">
+      <label>Bapa Ndehara (Simatua Amani)</label>
+      <input type="text" name="bapa_ndehara" placeholder="Marga Mertua Laki-laki">
+      <label>Nande Ndehara (Simatua Inani)</label>
+      <input type="text" name="nande_ndehara" placeholder="Beru Mertua Perempuan">
+      <label>Senina / Turang Ndehara</label>
+      <input type="text" name="senina_turang_ndehara" placeholder="Ipar">
 
-      <div class="section-title">PUPUS (Anak)</div>
-      <div id="anakContainer">
-        <input type="text" name="anak[]" placeholder="Nama Anak 1 (Marga/Beru)">
+      <div class="section-divider">PUPUS (ANAK)</div>
+      <div id="listAnak">
+        <input type="text" name="anak" placeholder="Nama Anak 1 & Marga/Beru">
       </div>
-      <button type="button" onclick="addAnak()" style="margin-top:5px; background:#eee; border:1px solid #ccc;">+ Tambah Anak</button>
+      <button type="button" class="btn-tambah" onclick="tambahAnak()">+ Tambah Anak</button>
 
-      <div class="section-title">KONTAK</div>
-      <textarea name="alamat" placeholder="Alamat Lengkap"></textarea>
-      <input type="tel" name="wa" placeholder="No. WA (0812...)">
+      <div class="section-divider">KONTAK</div>
+      <label>Alamat</label>
+      <textarea name="alamat" rows="2"></textarea>
+      <label>No. WhatsApp</label>
+      <input type="tel" name="wa" placeholder="0812xxxx">
 
-      <button type="submit" class="btn-simpan">SIMPAN DATA</button>
+      <button type="button" class="btn-submit" onclick="simpanData(this)">SIMPAN DATA</button>
     </form>
   </div>
 
+  <div class="footer">Mejuah-juah © 2026 - Budaya Karo</div>
+
   <script>
-    function addAnak() {
-      const container = document.getElementById('anakContainer');
-      const input = document.createElement('input');
+    function tambahAnak() {
+      var container = document.getElementById('listAnak');
+      var input = document.createElement('input');
       input.type = 'text';
-      input.name = 'anak[]';
+      input.name = 'anak';
       input.placeholder = 'Nama Anak Berikutnya';
       input.style.marginTop = '5px';
       container.appendChild(input);
     }
 
-    function handleFormSubmit(formObject) {
-      google.script.run.withSuccessHandler(msg => {
-        alert(msg);
-        formObject.reset();
-      }).processForm(formObject);
+    function simpanData(btn) {
+      btn.disabled = true;
+      btn.innerText = "Mengirim...";
+      
+      var form = document.getElementById('formTutur');
+      google.script.run.withSuccessHandler(function(res) {
+        alert(res);
+        form.reset();
+        btn.disabled = false;
+        btn.innerText = "SIMPAN DATA";
+      }).processForm(form);
     }
   </script>
 </body>
