@@ -3,6 +3,16 @@
 <head>
   <base target="_top">
   <style>
+	  .tab-menu { display: flex; justify-content: center; background: var(--hitam-karo); margin-top: 10px; }
+.tab-btn { background: none; border: none; color: white; padding: 10px 20px; cursor: pointer; border-bottom: 3px solid transparent; }
+.tab-btn.active { border-bottom: 3px solid var(--emas-karo); color: var(--emas-karo); font-weight: bold; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.3s; }
+
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
     :root {
       --merah-karo: #8B0000;
       --emas-karo: #D4AF37;
@@ -27,64 +37,144 @@
   </style>
 </head>
 <body>
-
   <div class="header">
     <h2>TUTUR KARO</h2>
-    <div style="font-size: 0.8em; color: white;">Rakut Sitelu & Tutur Siwaluh</div>
+    <div class="tab-menu">
+      <button class="tab-btn active" onclick="bukaTab(event, 'tabInput')">ISI DATA</button>
+      <button class="tab-btn" onclick="bukaTab(event, 'tabCari')">CARI TUTUR</button>
+    </div>
   </div>
 
-  <div class="container">
-    <form id="formTutur">
-      <label>Gelar / Nama Lengkap</label>
-      <input type="text" name="nama" placeholder="Contoh: Tarsim" required>
+  <div id="tabInput" class="tab-content active">
+    <div class="container">
+      <form id="formTutur">
+        <label>Foto / Selfie</label>
+        <input type="file" id="inputFoto" accept="image/*" onchange="prosesFoto(this)">
+        <input type="hidden" name="foto_url" id="foto_url">
+        <div id="statusFoto" style="font-size: 0.8em; color: var(--merah-karo); margin-top: 5px;"></div>
+        <center><img id="preview" style="display:none; width:100px; margin-top:10px; border-radius:5px; border: 2px solid var(--emas-karo);"></center>
 
-      <label>Marga / Beru</label>
-      <select name="marga">
-        <option value="">- Pilih Marga -</option>
-        <option>Karo-Karo</option>
-        <option>Ginting</option>
-        <option>Tarigan</option>
-        <option>Sembiring</option>
-        <option>Perangin-angin</option>
-      </select>
+        <label>Gelar / Nama Lengkap</label>
+        <input type="text" name="nama" placeholder="Contoh: Tarsim" required>
 
-      <div class="section-divider">JABU (ORANG TUA)</div>
-      <label>Bapa</label>
-      <input type="text" name="bapa" placeholder="Nama Bapa & Marga">
-      <label>Nande</label>
-      <input type="text" name="nande" placeholder="Nama Nande & Beru">
-      <label>Senina / Turang</label>
-      <input type="text" name="senina_turang" placeholder="Saudara Kandung">
+        <label>Marga / Beru</label>
+        <select name="marga">
+          <option value="">- Pilih Marga -</option>
+          <option>Karo-Karo</option>
+          <option>Ginting</option>
+          <option>Tarigan</option>
+          <option>Sembiring</option>
+          <option>Perangin-angin</option>
+        </select>
 
-      <div class="section-divider">JABU (PASANGAN & MERTUA)</div>
-      <label>Ndehara / Perbulangen</label>
-      <input type="text" name="ndehara" placeholder="Istri (Beru) / Suami (Marga)">
-      <label>Bapa Ndehara</label>
-      <input type="text" name="bapa_ndehara" placeholder="Marga Mertua Laki-laki">
-      <label>Nande Ndehara</label>
-      <input type="text" name="nande_ndehara" placeholder="Beru Mertua Perempuan">
-      <label>Senina / Turang Ndehara</label>
-      <input type="text" name="senina_turang_ndehara" placeholder="Ipar">
+        <div class="section-divider">JABU (ORANG TUA)</div>
+        <label>Bapa</label>
+        <input type="text" name="bapa" placeholder="Nama Bapa & Marga">
+        <label>Nande</label>
+        <input type="text" name="nande" placeholder="Nama Nande & Beru">
+        <label>Senina / Turang</label>
+        <input type="text" name="senina_turang" placeholder="Saudara Kandung">
 
-      <div class="section-divider">PUPUS (ANAK)</div>
-      <div id="listAnak">
-        <input type="text" name="anak" placeholder="Nama Anak 1 & Marga/Beru">
+        <div class="section-divider">JABU (PASANGAN & MERTUA)</div>
+        <label>Ndehara / Perbulangen</label>
+        <input type="text" name="ndehara" placeholder="Istri (Beru) / Suami (Marga)">
+        <label>Bapa Ndehara</label>
+        <input type="text" name="bapa_ndehara" placeholder="Marga Mertua Laki-laki">
+        <label>Nande Ndehara</label>
+        <input type="text" name="nande_ndehara" placeholder="Beru Mertua Perempuan">
+        <label>Senina / Turang Ndehara</label>
+        <input type="text" name="senina_turang_ndehara" placeholder="Ipar">
+
+        <div class="section-divider">PUPUS (ANAK)</div>
+        <div id="listAnak">
+          <input type="text" name="anak" placeholder="Nama Anak 1 & Marga/Beru">
+        </div>
+        <button type="button" class="btn-tambah" onclick="tambahAnak()">+ Tambah Anak</button>
+
+        <div class="section-divider">KONTAK</div>
+        <label>Alamat</label>
+        <textarea name="alamat" rows="2"></textarea>
+        <label>No. WhatsApp</label>
+        <input type="tel" name="wa" placeholder="0812xxxx">
+
+        <button type="button" id="btnSimpan" class="btn-submit" onclick="kirimData()">SIMPAN DATA</button>
+      </form>
+      <div id="infoLokal" style="margin-top: 20px;"></div>
+    </div>
+  </div>
+
+  <div id="tabCari" class="tab-content">
+    <div class="container">
+      <div class="search-box" style="display: flex; gap: 10px;">
+        <input type="text" id="inputCari" placeholder="Ketik Nama/Marga..." style="margin-top:0;">
+        <button class="btn-search" onclick="jalankanCari()" style="background: var(--hitam-karo); color: var(--emas-karo); border: 1px solid var(--emas-karo); border-radius: 5px; padding: 0 15px; cursor: pointer;">CARI</button>
       </div>
-      <button type="button" class="btn-tambah" onclick="tambahAnak()">+ Tambah Anak</button>
-
-      <div class="section-divider">KONTAK</div>
-      <label>Alamat</label>
-      <textarea name="alamat" rows="2"></textarea>
-      <label>No. WhatsApp</label>
-      <input type="tel" name="wa" placeholder="0812xxxx">
-
-      <button type="button" class="btn-submit" onclick="simpanData(this)">SIMPAN DATA</button>
-    </form>
+      <div id="hasilPencarian" style="margin-top: 20px;"></div>
+    </div>
   </div>
 
   <div class="footer">Mejuah-juah © 2026 - Budaya Karo</div>
+</body>
 
-  <script>
+<script>
+	// Cek password saat aplikasi pertama kali dimuat
+window.addEventListener('load', function() {
+  var sandi = prompt("Mejuah-juah! Masukkan Kode Akses Keluarga:");
+  if (sandi !== "mejuahjuah") { // GANTI PASWORD DISINI
+    alert("Kode Salah. Halaman akan ditutup.");
+    document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px;'>Akses Ditolak. Silakan hubungi Admin.</h2>";
+  }
+});
+
+function prosesFoto(input) {
+  const status = document.getElementById('statusFoto');
+  const preview = document.getElementById('preview');
+  const file = input.files[0];
+  
+  if (!file) return;
+
+  status.innerText = "Tengah ngompres foto...";
+  
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = function(event) {
+    const img = new Image();
+    img.src = event.target.result;
+    img.onload = function() {
+      // LOGIKA KOMPRESI SISI HP
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 400; // Ukuran standar seragam
+      let width = img.width;
+      let height = img.height;
+
+      if (width > MAX_WIDTH) {
+        height *= MAX_WIDTH / width;
+        width = MAX_WIDTH;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // Konversi ke Base64 dengan kualitas 0.7 (70%)
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+      
+      // Tampilkan Preview
+      preview.src = dataUrl;
+      preview.style.display = 'block';
+
+      // Upload ke Drive langsung setelah kompresi
+      status.innerText = "Tengah ngupload ke Drive...";
+      google.script.run.withSuccessHandler(function(url) {
+        document.getElementById('foto_url').value = url;
+        status.innerText = "✅ Foto enggo terupload.";
+      }).uploadFoto(dataUrl, "Foto_" + Date.now() + ".jpg");
+    };
+  };
+}
+
+// Fungsi kirimData tetap sama, dia akan otomatis membawa nilai foto_url yang sudah terisi
     function tambahAnak() {
       var container = document.getElementById('listAnak');
       var input = document.createElement('input');
@@ -95,18 +185,122 @@
       container.appendChild(input);
     }
 
-    function simpanData(btn) {
-      btn.disabled = true;
-      btn.innerText = "Mengirim...";
-      
-      var form = document.getElementById('formTutur');
-      google.script.run.withSuccessHandler(function(res) {
-        alert(res);
-        form.reset();
-        btn.disabled = false;
-        btn.innerText = "SIMPAN DATA";
-      }).processForm(form);
+// Fungsi untuk memuat data dari memori HP saat aplikasi dibuka
+window.onload = function() {
+  const dataLokal = localStorage.getItem('dataTutur');
+  if (dataLokal) {
+    const btn = document.getElementById('btnSimpan');
+    // Jika ingin melarang sama sekali:
+    btn.disabled = true;
+    btn.innerText = "DATA SUDAH TERKIRIM";
+    btn.style.background = "#ccc";
+    
+    document.getElementById('infoLokal').innerHTML = `
+      <div style="background:#e8f5e9; padding:10px; border-radius:5px; margin-bottom:15px; border:1px solid #4caf50; font-size:0.85em;">
+        <strong>Mejuah-juah!</strong> Anda sudah mengirim data Tutur sebelumnya. 
+        Satu perangkat hanya diperbolehkan mengirim satu kali untuk menjaga kerapian data.
+      </div>
+    `;
+  }
+};
+
+function kirimData() {
+  var btn = document.getElementById('btnSimpan');
+  btn.disabled = true; // Matikan tombol agar tidak diklik dua kali
+  btn.innerText = "Tengah Nyimpan Data...";
+  
+  var form = document.getElementById('formTutur'); // Pastikan ID form Anda adalah 'formTutur'
+  
+  // 1. Simpan ke Memori HP (LocalStorage)
+  const dataSimpan = {
+    nama: document.getElementsByName('nama')[0].value,
+    marga: document.getElementsByName('marga')[0].value,
+    wa: document.getElementsByName('wa')[0].value,
+    alamat: document.getElementsByName('alamat')[0].value,
+    tanggal: new Date().toLocaleString()
+  };
+  localStorage.setItem('dataTutur', JSON.stringify(dataSimpan));
+
+  // 2. Kirim ke Google Sheets
+  google.script.run
+    .withSuccessHandler(function(res) {
+      alert(res + "\n\nData juga telah disimpan di HP Anda.");
+      btn.disabled = false;
+      btn.innerText = "SIMPAN DATA";
+      form.reset(); // Kosongkan form setelah berhasil
+      document.getElementById('preview').style.display = 'none'; // Sembunyikan foto lama
+      document.getElementById('statusFoto').innerText = "";
+    })
+    .withFailureHandler(function(err) {
+      alert("Gagal menyimpan: " + err);
+      btn.disabled = false;
+      btn.innerText = "SIMPAN DATA";
+    })
+    .processForm(form);
+}
+function bukaTab(evt, tabName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tab-content");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].className = tabcontent[i].className.replace(" active", "");
+  }
+  tablinks = document.getElementsByClassName("tab-btn");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(tabName).className += " active";
+  evt.currentTarget.className += " active";
+}
+
+function jalankanCari() {
+  const keyword = document.getElementById('inputCari').value;
+  const wadah = document.getElementById('hasilPencarian');
+  
+  if (keyword.length < 3) {
+    alert("Ketik minimal 3 huruf untuk mencari.");
+    return;
+  }
+  
+  wadah.innerHTML = "<p style='text-align:center;'>Tengah nyari data...</p>";
+  
+  google.script.run.withSuccessHandler(function(data) {
+    wadah.innerHTML = "";
+    if (!data || data.length === 0) {
+      wadah.innerHTML = "<p style='text-align:center;'>Data tidak ditemukan.</p>";
+      return;
     }
+    
+data.forEach(item => {
+      let fotoUrl = item.foto;
+      
+      if (fotoUrl && fotoUrl.includes("drive.google.com")) {
+        // Logika pengambilan ID yang lebih kuat menggunakan Regular Expression
+        const match = fotoUrl.match(/\/d\/([^/]+)/);
+        const fileId = match ? match[1] : null;
+        
+        if (fileId) {
+          // Gunakan thumbnail link (hanya untuk preview cepat, lebih ringan dan stabil)
+          fotoUrl = "https://drive.google.com/thumbnail?id=" + fileId + "&sz=w400";
+        }
+      } 
+      
+      // Jika link rusak atau kosong, gunakan gambar lokal (emoji) agar tidak kena ERR_CONNECTION
+      const imgTag = (fotoUrl && fotoUrl !== "No Photo") 
+        ? `<img src="${fotoUrl}" style="width: 80px; height: 100px; object-fit: cover; border-radius: 5px;">`
+        : `<div style="width: 80px; height: 100px; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 2em; border-radius: 5px;">👤</div>`;
+
+      wadah.innerHTML += `
+        <div style="background: #fff; border-left: 5px solid var(--merah-karo); padding: 15px; margin-bottom: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; gap: 15px;">
+          ${imgTag}
+          <div style="font-size: 0.9em; flex: 1;">
+            <strong style="color: var(--merah-karo); font-size: 1.1em;">${item.nama}</strong> <span style="background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 0.8em;">${item.marga}</span><br>
+            <small>Bapa: ${item.bapa} | Nande: ${item.nande}</small><br>
+            <small>Anak: ${item.anak || '-'}</small><br>
+            <a href="https://wa.me/${item.wa.replace(/[^0-9]/g, '')}" target="_blank" style="color: green; text-decoration: none; font-weight: bold; display: block; margin-top: 5px;">💬 WhatsApp</a>
+          </div>
+        </div>`;
+    });
+  }).cariTutur(keyword);
+}
   </script>
-</body>
 </html>
